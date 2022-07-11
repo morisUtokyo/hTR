@@ -1,14 +1,27 @@
 # hTR
-Computing a pair of SNVs closest to the focal position (with tandem repeats)
+A pipeline for computing a pair of single nucleotide variants (SNVs) closest to a focal region with tandem repeats of interest
 
-Download the reference human genome hg38 (use, say wget_chr.sh) and unzip the files to obtain chrZZZ.fa for each ZZZ=1,2,...,22,X,Y.
+1. Determine a focal region with tandem repeats in the reference human genome (e.g., hg38). The region can be specified by (chromosome number), (begin), and (end) that respectively represent the human chromosome number, start and end position: e.g., 12,2345,3456 .
 
-Generate minimap2 index on the reference genome hg38 using minimap2_indexing.sh to generate chrZZZ.mmi.
-Put the minimap2 index (chrZZZ.mmi) into a directory, say hg38.
+2. From reads that are collected from individuals, select reads that map to the focal region, and generate a fasta file with substrings (of length, say 1 kb) of the selected reads before and after the focal region. Each substring of a read must have a annotation of the form <br> X,readY,[pre|post] <br> where X is the identifier (alphanumeric string) of an individual, Y is the identifier of the read, and pre (post, respectively) indicates that the substring is located before (after) the region. For example, 
+<br>A123,read1,pre, and B456,read4,post.
 
-Align each read in the input fasta file to the reference using minimap2 to generate alignments in a cigar file with cs SAM/PAF tags by calling　　minimap2 -c --cs chrZZZ.mmi \<fasta file\> \> \<cigar file\>
+3. Align each read in the fasta file to the reference genome (e.g., hg38) using minimap2.
+- Download the reference human genome hg38 (using say wget_chr.sh), and unzip the files to obtain chromosome DNA sequences named chrZ.fa for each Z=1,2,...,22,X,Y.
+- To accelerate computational performance, generate minimap2 index named chrZZZ.mmi on chrZZZ.fa using minimap2_indexing.sh, and put the minimap2 index (chrZZZ.mmi) into a directory, say hg38.
+- Generate alignments and put them into a cigar file with cs SAM/PAF tags by calling: 
+<br> minimap2 -c --cs chrZZZ.mmi (fasta file)  \>  (cigar file) <br>
 
-Executing the Makefile creates an executable named "hap" that parses the cigar file and outputs the pair of single nucleotide variants (SNVs) closest to the focal tandem repeat at the input position given in the arguments for each read in the fasta file. Specifically call "hap -f \<cigarFile\> -c \<chromosome number\> -b $\<begin\> -e \<end\>"
+4. Execute the Makefile to create an executable named "hap" that parses the cigar file for each substring in the fasta file, and outputs a pair of positions of single nucleotide variants (SNVs) that are closest to the focal region . Specifically call:　
+<br> hap -f (cigarFile) -c (chromosome number) -b (begin) -e (end) \> (hap file) <br>
+Each line of (hap file) has the form 
+<br> X(tab)Y(tab)H <br> 
+where (tab) denotes a tab, X is the ID of an individual, Y is the ID of a read, and H is the pair of positions of closest SNVs separated by a vertical bar "|" : e.g., 
+<br> A123   1   2345|3456 .<br> 
+When no SNVs are found in a substring before the focal region, H has no position before | : e.g., 
+<br> A123  1  |3456 .<br> 
+Similarly, in the absence of SNVs before and after the region, H has no positions and is "|".
 
-To execute the above two steps, use hTR.sh by calling "bash hTR.sh \<seq.fasta\> \<chromosome number\> \<begin\> \<end\>" 
+5. To execute the alignment of substrings in a fasta file to the reference and detection of closest SNVs, call hTR.sh :　
+<br> bash hTR.sh (fasta file) (chromosome number) (begin) (end)
 
