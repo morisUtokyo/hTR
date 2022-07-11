@@ -1,5 +1,5 @@
 # hTR
-A pipeline for computing a pair of single nucleotide variants (SNVs) closest to a focal region with tandem repeats of interest
+A pipeline for computing a pair of single nucleotide variants (SNVs) closest to a focal region with tandem repeats of interest. Rather than using publicly available SNV databases, the pipeline attempts to find SNVs among HiFi reads from scratch to identify novel rare SNVs that might be associated with rare TRs.
 
 1. Determine a focal region with tandem repeats in the reference human genome (e.g., hg38). The region can be specified by (chromosome number), (begin), and (end) that respectively represent the human chromosome number, start and end position: e.g., 12,2345,3456 .
 
@@ -12,7 +12,7 @@ A pipeline for computing a pair of single nucleotide variants (SNVs) closest to 
 - Generate alignments and put them into a cigar file with cs SAM/PAF tags by calling: 
 <br> minimap2 -c --cs chrZZZ.mmi (fasta file)  \>  (cigar file) <br>
 
-4. Execute the Makefile to create an executable named "hap" that parses the cigar file for each substring in the fasta file, and outputs a pair of positions of single nucleotide variants (SNVs) that are closest to the focal region . Specifically call:　
+4. Execute the Makefile to create an executable named "hap" that parses the cigar file for each substring in the fasta file, and outputs a pair of positions of SNVs that differ from of the reference and are closest to the focal region. Specifically call:　
 <br> hap -f (cigarFile) -c (chromosome number) -b (begin) -e (end) \> (hap file) <br>
 Each line of (hap file) has the form 
 <br> X(tab)Y(tab)H <br> 
