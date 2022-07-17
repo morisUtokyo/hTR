@@ -3,8 +3,8 @@ A pipeline for computing a pair of single nucleotide variants (SNVs) closest to 
 
 1. Determine a focal region with tandem repeats in the reference human genome (e.g., hg38). The region can be specified by (chromosome number), (begin), and (end) that respectively represent the human chromosome number, start and end position: e.g., 12,2345,3456 .
 
-2. From reads that are collected from individuals, select reads that map to the focal region, and generate a fasta file with substrings (of length, say 1 kb) of the selected reads before and after the focal region. Each substring of a read must have a annotation of the form <br> X,readY,[pre|post] <br> where X is the identifier (alphanumeric string) of an individual, Y is the identifier of the read, and pre (post, respectively) indicates that the substring is located before (after) the region. For example, 
-<br>A123,read1,pre, and B456,read4,post.
+2. From reads that are collected from individuals, select reads that map to the focal region, and generate a fasta file with substrings (of length, say 1 kb) of the selected reads before and after the focal region. Each substring of a read must have a annotation of the form "X,readY,[pre|post]" where X is the identifier (alphanumeric string) of an individual, Y is the identifier of the read, and pre (post, respectively) indicates that the substring is located before (after) the region. For example, 
+A123,read1,pre, and B456,read4,post.
 
 3. Align each read in the fasta file to the reference genome (e.g., hg38) using minimap2.
 - Download the reference human genome hg38 (using say wget_chr.sh), and unzip the files to obtain chromosome DNA sequences named chrZ.fa for each Z=1,2,...,22,X,Y.
